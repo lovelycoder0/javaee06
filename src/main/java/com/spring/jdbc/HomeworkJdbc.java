@@ -12,11 +12,13 @@ import java.util.List;
 @Configuration
 public class HomeworkJdbc {
 
-    public  List<Homework> selectAll() {
+    public  List<Homework> selectAll() throws SQLException {
         //定义连接数据库
         Connection con= null;
         try {
             con = DatabasePool.getHikariDataSource().getConnection();
+            con.setAutoCommit(false);
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -43,10 +45,13 @@ public class HomeworkJdbc {
                 list.add(sh);
 
             }
+            con.commit();//提交事务
 
         }  catch (SQLException e) {
             //数据库连接失败异常处理
             e.printStackTrace();
+            con.rollback();//事务回滚
+
         } catch (Exception e) {
             // TODO: handle exception
             e.printStackTrace();
@@ -67,6 +72,8 @@ public class HomeworkJdbc {
         }
         //要执行的SQL语句
         String sql = "insert into homework(homeworkid,homeworktitle) values(?,?) ";
+
+        System.out.println("布置了新作业");
 
         try {
             //创建statement类对象，用来执行SQL语句！！
@@ -89,7 +96,7 @@ public class HomeworkJdbc {
 
     }
 
-    public void main(String[] args) {
+    public void main(String[] args) throws SQLException {
         List<Homework> list=selectAll();
         for (Homework sh:list){
             System.out.println(sh.getHomeworkid());

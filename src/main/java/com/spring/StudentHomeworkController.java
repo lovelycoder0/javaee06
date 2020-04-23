@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 
 @Controller
@@ -22,7 +23,7 @@ public class StudentHomeworkController {
     StudentHomeworkJdbc studenthomework;
 
     @RequestMapping(method = RequestMethod.GET,value = "/student")
-    public String student(HttpServletRequest request, HttpServletResponse response){
+    public String student(HttpServletRequest request, HttpServletResponse response) throws SQLException {
 
         List<StudentHomework> list= studenthomework.selectAll();
         request.setAttribute("list",list);
